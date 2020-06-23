@@ -13,42 +13,68 @@
 <canvas id="myCanvas" width="600" height="600" >
 <img id="image" width="300" height="300" src="/data/images/best.jpg">
 <script>
- 
-/**
- var c=document.getElementById("myCanvas");
-  var ctx=c.getContext("2d");
-  var img=document.getElementById("image");  
-  ctx.drawImage(img,10,10);  
-  var canvas = document.getElementById('myCanvas');
-  var context = canvas.getContext('2d');
 
-  context.beginPath();
-  context.rect(50, 50, 100, 100);
-  context.fillStyle = 'red';
-  context.fill();
- **/
 
-window.onload = function() {
-  var c = document.getElementById("myCanvas");
-  var ctx = c.getContext("2d");
-  var img = document.getElementById("image");
-  ctx.drawImage(img, 10, 10);
+// window.onload = function() {
+//   var c = document.getElementById("myCanvas");
+//   var ctx = c.getContext("2d");
+//   var img = document.getElementById("image");
+//   ctx.drawImage(img, 10, 10);
 
   
-ctx.beginPath();
-ctx.lineWidth = "3";
-ctx.strokeStyle = "yellow";
-ctx.rect(50, 50, 100, 100);
-ctx.stroke();
+// ctx.beginPath();
+// ctx.lineWidth = "3";
+// ctx.strokeStyle = "yellow";
+// ctx.rect(50, 50, 100, 100);
+// ctx.stroke();
 
 
-ctx.beginPath();
-ctx.lineWidth = "3";
-ctx.strokeStyle = "yellow";
-ctx.rect(100, 100, 200, 200);
-ctx.stroke();
+// ctx.beginPath();
+// ctx.lineWidth = "3";
+// ctx.strokeStyle = "yellow";
+// ctx.rect(100, 100, 200, 200);
+// ctx.stroke();
 
-};
+// };
+
+
+function init() {
+  classes = [];
+  canvas.width = 300;
+  canvas.height = 300;
+  scale = 1;
+  originx = 0;
+  originy = 0;
+ 
+ 
+ //ctx.fillStyle = "blue";
+  //ctx.fillRect(0, 0, canvas.width, canvas.height);
+  canvas.addEventListener('mousedown', mouseDown, false);
+  canvas.addEventListener('mouseup', mouseUp, false);
+  canvas.addEventListener('mousemove', mouseMove, false);
+  $.getJSON( "process.php", {
+    f: "load",
+    format: "json"
+  })
+  .done(function( data ) {
+    console.log(data);
+    imagename = data.image;
+    $("#filename").html(imagename);
+    img.src = 'data/images/' + data.image;
+    img.onload = function() {
+      ctx.drawImage(img, 0, 0,IMAGE_WIDTH,IMAGE_HEIGHT);
+    }
+    $("#data_info").html("Total images:<b>" + data.total_images + "</b><br/>Total annotations:<b>" + data.total_annotated + " (" + (100.0*data.total_annotated/data.total_images).toFixed(1) + "%)</b>");
+    col = 0;
+    classlist = data.classes;
+    var r = '';
+    for(var a in data.classes) {
+      r += "<div class='tclass' style='background-color:hsl(" + col + ",100%,80%)' onclick='class_click(\"" + a+"\");'><input type=\"radio\" name='classes' id=\"class_" + a + "\"'/>" + data.classes[a]  + "</div>";
+      col += 60;
+    }
+    $('#classes').html(r);
+  });
+}
 
 </script>
 
